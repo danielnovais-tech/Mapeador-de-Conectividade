@@ -22,4 +22,4 @@ class Point:
     name: str
     lat: float
     lon: float
-    neighbors: List[str]  # IDs dos vizinhos conectados
+    neighbors: List[str]  # List of IDs of connected neighbors
