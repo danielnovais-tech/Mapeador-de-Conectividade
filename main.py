@@ -6,6 +6,7 @@ Execute: python main.py
 import os
 import json
 from datetime import datetime
+
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -185,8 +186,8 @@ class MapeadorConectividade:
             viz_file = self.visualize_graph()
             print(f"Visualização gerada em: {viz_file}")
             
-        except FileNotFoundError as e:
-            print(f"Erro: {e} Crie-o com dados de exemplo.")
+        except FileNotFoundError:
+            print(f"Erro: Arquivo {self.json_file} não encontrado. Crie-o com dados de exemplo.")
         except Exception as e:
             print(f"Erro durante a execução: {e}")
 
