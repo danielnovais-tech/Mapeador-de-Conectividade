@@ -20,8 +20,16 @@ def carregar_pontos(caminho_arquivo):
     Returns:
         Lista de pontos carregados
     """
-    with open(caminho_arquivo, 'r', encoding='utf-8') as f:
-        dados = json.load(f)
+    try:
+        with open(caminho_arquivo, 'r', encoding='utf-8') as f:
+            dados = json.load(f)
+    except FileNotFoundError:
+        print(f"Erro: Arquivo não encontrado: {caminho_arquivo}")
+        raise
+    except json.JSONDecodeError as e:
+        print(f"Erro: JSON inválido no arquivo {caminho_arquivo}: {e}")
+        raise
+    
     pontos = dados.get('pontos', [])
     print(f"Carregados {len(pontos)} pontos.")
     return pontos
