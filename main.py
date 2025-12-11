@@ -12,18 +12,24 @@ def main():
     relatorios_dir = os.path.join(data_dir, 'relatorios')
     
     if not os.path.exists(json_file):
-        print(f"Erro: Arquivo {json_file} não encontrado. Crie-o com dados de exemplo.")
+        print(f"Erro: Arquivo {json_file} não encontrado.")
+        print("Crie um arquivo JSON com o seguinte formato:")
+        print('{"pontos": [{"id": "A", "nome": "Ponto A", "conexoes": ["B"]}]}')
         return
     
     # Carrega e processa
-    points = load_points(json_file)
-    print(f"Carregados {len(points)} pontos.")
-    
-    G = build_graph(points)
-    print(f"Grafo construído: {G.number_of_nodes()} nós, {G.number_of_edges()} arestas.")
-    
-    report_file = generate_report(G, relatorios_dir)
-    print(f"Relatório gerado em: {report_file}")
+    try:
+        points = load_points(json_file)
+        print(f"Carregados {len(points)} pontos.")
+        
+        G = build_graph(points)
+        print(f"Grafo construído: {G.number_of_nodes()} nós, {G.number_of_edges()} arestas.")
+        
+        report_file = generate_report(G, relatorios_dir)
+        print(f"Relatório gerado em: {report_file}")
+    except Exception as e:
+        print(f"Erro ao processar: {e}")
+        return
 
 if __name__ == "__main__":
     main()

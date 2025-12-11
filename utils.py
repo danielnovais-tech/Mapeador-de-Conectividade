@@ -17,9 +17,23 @@ def load_points(json_file):
     
     Returns:
         list: Lista de dicionários representando os pontos.
+    
+    Raises:
+        FileNotFoundError: Se o arquivo não existe.
+        json.JSONDecodeError: Se o arquivo não é um JSON válido.
+        ValueError: Se o JSON não contém a chave 'pontos'.
     """
-    with open(json_file, 'r', encoding='utf-8') as f:
-        data = json.load(f)
+    try:
+        with open(json_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Arquivo não encontrado: {json_file}")
+    except json.JSONDecodeError as e:
+        raise json.JSONDecodeError(f"Erro ao ler JSON: {e.msg}", e.doc, e.pos)
+    
+    if 'pontos' not in data:
+        raise ValueError("O arquivo JSON deve conter uma chave 'pontos' com a lista de pontos.")
+    
     return data.get('pontos', [])
 
 
@@ -39,11 +53,15 @@ def build_graph(points):
     for point in points:
         G.add_node(point['id'], nome=point.get('nome', ''))
     
-    # Adiciona arestas (conexões)
+    # Adiciona arestas (conexões) - apenas se ambos os nós existem
     for point in points:
         point_id = point['id']
         for connection in point.get('conexoes', []):
-            G.add_edge(point_id, connection)
+            # Valida que o nó de destino existe antes de criar a aresta
+            if connection in G.nodes():
+                G.add_edge(point_id, connection)
+            else:
+                print(f"Aviso: Conexão ignorada de '{point_id}' para '{connection}' (nó destino não existe)")
     
     return G
 
