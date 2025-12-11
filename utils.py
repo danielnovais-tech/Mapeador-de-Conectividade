@@ -29,12 +29,12 @@ def load_points(json_file):
     except FileNotFoundError:
         raise FileNotFoundError(f"Arquivo não encontrado: {json_file}")
     except json.JSONDecodeError as e:
-        raise json.JSONDecodeError(f"Erro ao ler JSON: {e.msg}", e.doc, e.pos)
+        raise ValueError(f"Erro ao ler JSON: {e.msg}") from e
     
     if 'pontos' not in data:
         raise ValueError("O arquivo JSON deve conter uma chave 'pontos' com a lista de pontos.")
     
-    return data.get('pontos', [])
+    return data['pontos']
 
 
 def build_graph(points):
