@@ -1,197 +1,235 @@
-# Mapeador de Conectividade
+# Mapeador de Conectividade Rural
 
-Um mapeador simples e prático de conectividade de pontos (nós em uma rede/grafo), implementado em Python.
+Sistema para mapear e analisar pontos de conectividade em áreas rurais, fornecendo dados detalhados sobre qualidade de conexão, localização geográfica e infraestrutura de internet.
 
-## 📋 Descrição
+## Características
 
-Este projeto analisa conectividade entre pontos de uma rede. Carrega dados de pontos de um arquivo JSON, constrói um grafo com NetworkX e gera relatórios detalhados de conectividade.
+- 📍 Geolocalização de pontos de conectividade
+- 🚀 Testes de velocidade de internet (download/upload/latência)
+- 📊 Relatórios em múltiplos formatos (TXT/JSON/CSV)
+- 🗺️ Mapeamento de comunidades rurais
+- 📈 Análise de qualidade de conexão
+- 🔍 Importação e exportação de dados
 
-## ✨ Funcionalidades
+## Instalação
 
-- ✅ Carregamento de pontos a partir de arquivo JSON
-- ✅ Construção automática de grafo com NetworkX
-- ✅ Validação de conexões (ignora nós inexistentes)
-- ✅ Detecção de componentes conectados
-- ✅ Análise de grau de conectividade de cada nó
-- ✅ Geração de relatórios com timestamp
-- ✅ Tratamento robusto de erros
-
-## 📦 Instalação
-
-### Pré-requisitos
-- Python 3.7 ou superior
-- pip (gerenciador de pacotes Python)
-
-### Passos de instalação
-
-1. Clone o repositório:
 ```bash
+# Clone o repositório
 git clone https://github.com/danielnovais-tech/Mapeador-de-Conectividade.git
 cd Mapeador-de-Conectividade
-```
 
-2. Instale as dependências:
-```bash
+# Instale as dependências
 pip install -r requirements.txt
 ```
 
-## 🚀 Uso
+## Dependências
 
-### Execução básica
+O projeto utiliza as seguintes bibliotecas Python:
+
+- `requests` - Requisições HTTP
+- `speedtest-cli` - Testes de velocidade de internet
+- `geopy` - Geocodificação e serviços de localização
+- `pandas` - Manipulação e análise de dados
+- `tabulate` - Formatação de tabelas
+- `pytest` - Framework de testes
+
+## Uso
+
+### Argumentos de Linha de Comando (CLI)
 
 ```bash
+python main.py [OPÇÕES]
+```
+
+#### Opções Disponíveis:
+
+- `--debug` - Ativa o modo debug com logs detalhados
+- `--relatorio` - Gera relatórios de conectividade em múltiplos formatos
+- `--importar` - Importa dados de conectividade de arquivos externos
+
+### Exemplos de Uso
+
+```bash
+# Modo normal
 python main.py
+
+# Com modo debug ativo
+python main.py --debug
+
+# Gerar relatório de conectividade
+python main.py --relatorio
+
+# Importar dados de arquivo
+python main.py --importar dados_conectividade.json
+
+# Combinar múltiplas opções
+python main.py --debug --relatorio
 ```
 
-### O que o programa faz:
+## Fluxo de Trabalho Típico
 
-1. Carrega os pontos do arquivo `data/pontos.json`
-2. Constrói um grafo com as conexões entre os pontos
-3. Gera um relatório de conectividade em `data/relatorios/`
+1. **Coleta de Dados**
+   - Execute o mapeador para coletar dados de conectividade
+   - O sistema registra automaticamente geolocalização e métricas de velocidade
 
-### Exemplo de saída:
+2. **Análise**
+   - Use `--relatorio` para gerar análises detalhadas
+   - Revise os dados em formato TXT, JSON ou CSV
 
-```
-Carregados 6 pontos.
-Grafo construído: 6 nós, 5 arestas.
-Relatório gerado em: data/relatorios/relatorio_20251211_153045.txt
-```
+3. **Importação/Exportação**
+   - Importe dados históricos com `--importar`
+   - Exporte resultados para análise externa
 
-## 📊 Estrutura de Dados
+4. **Depuração**
+   - Use `--debug` para troubleshooting e logs detalhados
 
-O arquivo `data/pontos.json` deve seguir o seguinte formato:
+## Estrutura de Dados
 
-```json
+### Ponto de Conectividade
+
+Cada ponto de conectividade armazenado contém as seguintes informações:
+
+```python
 {
-  "pontos": [
-    {
-      "id": "A",
-      "nome": "Ponto A",
-      "conexoes": ["B", "C"]
-    },
-    {
-      "id": "B",
-      "nome": "Ponto B",
-      "conexoes": ["A", "D"]
-    },
-    {
-      "id": "C",
-      "nome": "Ponto C",
-      "conexoes": ["A"]
-    }
-  ]
+    "id": int,                          # Identificador único
+    "comunidade": str,                  # Nome da comunidade rural
+    "latitude": float,                  # Coordenada de latitude
+    "longitude": float,                 # Coordenada de longitude
+    "provedor": str,                    # Provedor de internet
+    "tipo_conexao": str,                # Tipo (Fibra, Rádio, Satélite, etc.)
+    "velocidade_download": float,       # Velocidade em Mbps
+    "velocidade_upload": float,         # Velocidade em Mbps
+    "latencia": float,                  # Latência em ms
+    "data_coleta": str,                 # Data/hora da coleta (ISO 8601)
+    "conexoes": int                     # Número de conexões ativas
 }
 ```
 
-### Campos obrigatórios:
+### Exemplo de Dados
 
-- **`id`** (string): Identificador único do ponto
-- **`nome`** (string): Nome descritivo do ponto
-- **`conexoes`** (array): Lista de IDs de outros pontos aos quais este ponto está conectado
-
-## 📝 Relatório Gerado
-
-O relatório inclui as seguintes informações:
-
-### Informações Gerais
-- Número total de nós (pontos)
-- Número total de arestas (conexões)
-- Número de componentes conectados
-
-### Detalhes por Nó
-Para cada ponto, o relatório mostra:
-- ID e nome do nó
-- Grau de conectividade (número de conexões)
-- Lista de vizinhos (pontos conectados)
-
-### Componentes Conectados
-Se houver mais de um componente conectado (subgrafos isolados), o relatório lista cada componente separadamente.
-
-### Exemplo de relatório:
-
-```
-============================================================
-RELATÓRIO DE CONECTIVIDADE
-============================================================
-
-Total de nós: 6
-Total de arestas: 5
-
-Número de componentes conectados: 2
-
-------------------------------------------------------------
-DETALHES DOS NÓS
-------------------------------------------------------------
-
-Nó: A
-  Nome: Ponto A
-  Grau de conectividade: 2
-  Conectado a: ['B', 'C']
-
-Nó: F
-  Nome: Ponto F (isolado)
-  Grau de conectividade: 0
-  Conectado a: []
-
-------------------------------------------------------------
-COMPONENTES CONECTADOS
-------------------------------------------------------------
-
-Componente 1: ['A', 'B', 'C', 'D', 'E']
-Componente 2: ['F']
-
-============================================================
-Relatório gerado em: 2025-12-11 15:30:45
-============================================================
+```json
+{
+    "id": 1,
+    "comunidade": "Vila Rural São José",
+    "latitude": -15.7942,
+    "longitude": -47.8822,
+    "provedor": "InternetRural",
+    "tipo_conexao": "Rádio",
+    "velocidade_download": 10.5,
+    "velocidade_upload": 2.3,
+    "latencia": 45.2,
+    "data_coleta": "2025-12-11T23:15:00Z",
+    "conexoes": 25
+}
 ```
 
-## 🗂️ Estrutura do Projeto
+## Recursos Técnicos
+
+### 1. Testes de Velocidade
+
+Utiliza `speedtest-cli` para medir:
+- Velocidade de download
+- Velocidade de upload
+- Latência (ping)
+
+```python
+# Exemplo de teste de velocidade
+import speedtest
+st = speedtest.Speedtest()
+download_speed = st.download() / 1_000_000  # Mbps
+upload_speed = st.upload() / 1_000_000      # Mbps
+latency = st.results.ping                   # ms
+```
+
+### 2. Geocodificação
+
+Usa `geopy` para converter endereços em coordenadas:
+
+```python
+from geopy.geocoders import Nominatim
+geolocator = Nominatim(user_agent="mapeador_conectividade")
+location = geolocator.geocode("Comunidade Rural")
+```
+
+### 3. Formatos de Relatório
+
+- **TXT**: Relatório legível por humanos
+- **JSON**: Formato estruturado para APIs
+- **CSV**: Compatível com Excel e análise de dados
+
+## Estrutura do Projeto
 
 ```
 Mapeador-de-Conectividade/
-├── main.py                      # Ponto de entrada principal
-├── utils.py                     # Funções utilitárias
-├── requirements.txt             # Dependências do projeto
-├── .gitignore                   # Arquivos ignorados pelo Git
-├── README.md                    # Este arquivo
-└── data/
-    ├── pontos.json             # Dados de entrada (exemplo incluído)
-    └── relatorios/             # Relatórios gerados (criado automaticamente)
-        └── .gitkeep
+├── main.py              # Script principal
+├── models.py            # Modelos de dados
+├── requirements.txt     # Dependências
+├── tests/              # Testes unitários
+│   ├── __init__.py
+│   ├── test_connectivity.py
+│   └── test_reports.py
+├── data/               # Dados coletados
+│   ├── connectivity_data.json
+│   └── reports/
+└── README.md           # Documentação
 ```
 
-## 🛠️ Dependências
+## Testes
 
-- **networkx** >= 3.0: Biblioteca para criação e análise de grafos
+O projeto utiliza `pytest` para testes automatizados.
 
-## 🔧 Tratamento de Erros
+### Executar Todos os Testes
 
-O programa inclui validações robustas:
+```bash
+pytest
+```
 
-- ✅ Verifica se o arquivo `pontos.json` existe
-- ✅ Valida a estrutura do JSON (presença da chave `pontos`)
-- ✅ Ignora conexões para nós inexistentes (com aviso)
-- ✅ Captura e reporta erros de forma amigável
+### Executar Testes Específicos
 
-## 🚀 Roadmap
+```bash
+# Testes de conectividade
+pytest tests/test_connectivity.py
 
-Possíveis melhorias futuras:
+# Testes de relatórios
+pytest tests/test_reports.py
 
-- [ ] Visualização gráfica do grafo (matplotlib/graphviz)
-- [ ] Exportação de relatórios em múltiplos formatos (CSV, JSON, PDF)
-- [ ] Interface web com Flask/Django
-- [ ] Métricas avançadas de rede (centralidade, clustering)
-- [ ] Suporte a grafos direcionados e ponderados
-- [ ] Testes unitários com pytest
+# Com saída detalhada
+pytest -v
 
-## 📄 Licença
+# Com cobertura de código
+pytest --cov=. --cov-report=html
+```
 
-Este projeto está disponível como código aberto para fins educacionais e de análise de conectividade.
+### Estrutura de Testes
 
-## 👤 Autor
+```python
+# Exemplo de teste
+def test_speed_measurement():
+    """Testa a medição de velocidade"""
+    result = measure_speed()
+    assert result['download'] > 0
+    assert result['upload'] > 0
+    assert result['latency'] > 0
+```
 
-**Daniel Novais** ([@danielnovais-tech](https://github.com/danielnovais-tech))
+## Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
+5. Abra um Pull Request
+
+## Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
+
+## Contato
+
+Daniel Novais - [@danielnovais-tech](https://github.com/danielnovais-tech)
+
+Link do Projeto: [https://github.com/danielnovais-tech/Mapeador-de-Conectividade](https://github.com/danielnovais-tech/Mapeador-de-Conectividade)
 
 ---
 
-*Última atualização: 11 de dezembro de 2025*
+**Nota**: Este sistema foi desenvolvido para auxiliar no mapeamento de conectividade em áreas rurais, contribuindo para a inclusão digital e melhor planejamento de infraestrutura de internet.
