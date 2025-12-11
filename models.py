@@ -48,10 +48,15 @@ class PontoAcesso:
     @classmethod
     def from_dict(cls, data: dict) -> 'PontoAcesso':
         """Cria um ponto de acesso a partir de um dicionário."""
-        data = data.copy()
-        if data.get('data_medicao') and isinstance(data['data_medicao'], str):
-            data['data_medicao'] = datetime.fromisoformat(data['data_medicao'])
-        return cls(**data)
+        # Filter to only include valid dataclass fields
+        valid_fields = cls.__dataclass_fields__.keys()
+        filtered_data = {k: v for k, v in data.items() if k in valid_fields}
+        
+        # Handle datetime conversion
+        if filtered_data.get('data_medicao') and isinstance(filtered_data['data_medicao'], str):
+            filtered_data['data_medicao'] = datetime.fromisoformat(filtered_data['data_medicao'])
+        
+        return cls(**filtered_data)
 
 
 @dataclass

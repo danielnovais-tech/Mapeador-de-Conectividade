@@ -60,7 +60,9 @@ def save_points(json_file: str, points: List[Dict]) -> None:
         json_file: Caminho para o arquivo JSON
         points: Lista de dicionários com os pontos
     """
-    os.makedirs(os.path.dirname(json_file), exist_ok=True)
+    json_dir = os.path.dirname(json_file)
+    if json_dir:  # Only create directory if there is a directory component
+        os.makedirs(json_dir, exist_ok=True)
     with open(json_file, 'w', encoding='utf-8') as f:
         json.dump({'pontos': points}, f, indent=2, ensure_ascii=False)
 
