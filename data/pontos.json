@@ -1,33 +1,68 @@
 {
-  "pontos": [
+  "pontos_acesso": [
     {
-      "id": "A",
-      "nome": "Ponto A",
-      "conexoes": ["B", "C"]
+      "id": "starlink_001",
+      "comunidade": "Vila Rural São José",
+      "latitude": -15.7942,
+      "longitude": -47.8822,
+      "provedor": "Starlink",
+      "tipo_conexao": "Satélite",
+      "velocidade_download": 85.5,
+      "velocidade_upload": 15.2,
+      "latencia": 35,
+      "data_coleta": "2025-12-10 14:30:00",
+      "conexoes": ["starlink_002", "fibra_001"]
     },
     {
-      "id": "B",
-      "nome": "Ponto B",
-      "conexoes": ["A", "D"]
+      "id": "starlink_002",
+      "comunidade": "Assentamento Esperança",
+      "latitude": -15.8234,
+      "longitude": -47.9112,
+      "provedor": "Starlink",
+      "tipo_conexao": "Satélite",
+      "velocidade_download": 92.3,
+      "velocidade_upload": 18.7,
+      "latencia": 32,
+      "data_coleta": "2025-12-10 15:00:00",
+      "conexoes": ["starlink_001", "radio_001"]
     },
     {
-      "id": "C",
-      "nome": "Ponto C",
-      "conexoes": ["A", "D"]
+      "id": "fibra_001",
+      "comunidade": "Cidade Administrativa",
+      "latitude": -15.7801,
+      "longitude": -47.8754,
+      "provedor": "Oi Fibra",
+      "tipo_conexao": "Fibra Óptica",
+      "velocidade_download": 250.0,
+      "velocidade_upload": 100.0,
+      "latencia": 8,
+      "data_coleta": "2025-12-10 16:00:00",
+      "conexoes": ["starlink_001", "radio_001"]
     },
     {
-      "id": "D",
-      "nome": "Ponto D",
-      "conexoes": ["B", "C", "E"]
+      "id": "radio_001",
+      "comunidade": "Fazenda Boa Vista",
+      "latitude": -15.8523,
+      "longitude": -47.9334,
+      "provedor": "Provedor Local",
+      "tipo_conexao": "Rádio",
+      "velocidade_download": 15.5,
+      "velocidade_upload": 5.2,
+      "latencia": 65,
+      "data_coleta": "2025-12-10 17:00:00",
+      "conexoes": ["starlink_002", "fibra_001"]
     },
     {
-      "id": "E",
-      "nome": "Ponto E",
-      "conexoes": ["D"]
-    },
-    {
-      "id": "F",
-      "nome": "Ponto F (isolado)",
+      "id": "starlink_003",
+      "comunidade": "Comunidade Isolada",
+      "latitude": -15.9123,
+      "longitude": -48.0234,
+      "provedor": "Starlink",
+      "tipo_conexao": "Satélite",
+      "velocidade_download": 78.2,
+      "velocidade_upload": 12.8,
+      "latencia": 42,
+      "data_coleta": "2025-12-10 18:00:00",
       "conexoes": []
     }
   ]
