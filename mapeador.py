@@ -38,7 +38,12 @@ class ConnectivityMapper:
         return self.graph.number_of_nodes()
     
     def get_num_edges(self) -> int:
-        """Retorna o número de arestas no input"""
+        """
+        Retorna o número de arestas no input JSON
+        
+        Note: Em grafos não direcionados, arestas duplicadas (como [1,2] e [2,1])
+        são contadas separadamente no input, mas representam a mesma aresta no grafo.
+        """
         return self._num_input_edges
     
     def get_connected_components(self) -> List[List[str]]:
@@ -53,6 +58,8 @@ class ConnectivityMapper:
     
     def is_connected(self) -> bool:
         """Verifica se o grafo é conectado"""
+        if self.graph.number_of_nodes() == 0:
+            return False
         return nx.is_connected(self.graph)
     
     def get_shortest_paths_example(self, source: str) -> Dict[str, List[str]]:
@@ -67,11 +74,15 @@ class ConnectivityMapper:
         """
         paths = {}
         
+        # Verifica se o grafo está vazio ou se o nó fonte não existe
+        if self.graph.number_of_nodes() == 0 or source not in self.graph:
+            return paths
+        
         # Calcula caminhos mais curtos para todos os nós alcançáveis
         try:
             all_paths = nx.single_source_shortest_path(self.graph, source)
             paths = {target: path for target, path in all_paths.items()}
-        except nx.NodeNotFound:
+        except (nx.NodeNotFound, nx.NetworkXError):
             pass
         
         return paths

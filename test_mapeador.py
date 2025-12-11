@@ -107,6 +107,28 @@ class TestConnectivityMapper(unittest.TestCase):
             self.assertEqual(len(components), 2)
         finally:
             os.unlink(temp_file.name)
+    
+    def test_empty_graph(self):
+        """Testa um grafo vazio"""
+        empty_data = {
+            "nodes": [],
+            "edges": []
+        }
+        
+        temp_file = tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json')
+        json.dump(empty_data, temp_file)
+        temp_file.close()
+        
+        try:
+            mapper = ConnectivityMapper(temp_file.name)
+            self.assertEqual(mapper.get_num_nodes(), 0)
+            self.assertEqual(mapper.get_num_edges(), 0)
+            self.assertFalse(mapper.is_connected())
+            self.assertEqual(mapper.get_connected_components(), [])
+            self.assertEqual(mapper.get_degrees(), {})
+            self.assertEqual(mapper.get_shortest_paths_example("1"), {})
+        finally:
+            os.unlink(temp_file.name)
 
 
 if __name__ == '__main__':
