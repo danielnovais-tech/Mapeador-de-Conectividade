@@ -28,13 +28,14 @@ def load_graph_from_json(filepath):
     return G
 
 
-def analyze_connectivity(G, input_edge_count=None):
+def analyze_connectivity(G, input_edge_count=None, shortest_path_nodes=None):
     """
     Analyze connectivity properties of the graph.
     
     Args:
         G: NetworkX Graph object
         input_edge_count: Optional override for edge count from input
+        shortest_path_nodes: List of node IDs to include in shortest path examples (default: ["1", "3"])
         
     Returns:
         Dictionary with connectivity analysis results
@@ -52,15 +53,15 @@ def analyze_connectivity(G, input_edge_count=None):
     # Check if graph is connected
     is_connected = nx.is_connected(G)
     
-    # Calculate shortest paths example (from node "1" - limited to specific nodes)
+    # Calculate shortest paths example (from node "1")
     shortest_paths_example = {}
     if "1" in G.nodes():
         all_paths = nx.single_source_shortest_path(G, "1")
-        # Only include paths to nodes "1" and "3" as per problem statement
-        if "1" in all_paths:
-            shortest_paths_example["1"] = all_paths["1"]
-        if "3" in all_paths:
-            shortest_paths_example["3"] = all_paths["3"]
+        # Use specified nodes or default to ["1", "3"]
+        nodes_to_include = shortest_path_nodes if shortest_path_nodes is not None else ["1", "3"]
+        for node in nodes_to_include:
+            if node in all_paths:
+                shortest_paths_example[node] = all_paths[node]
     
     # Build result dictionary
     result = {
@@ -77,7 +78,7 @@ def analyze_connectivity(G, input_edge_count=None):
 
 def main():
     """Main function to run connectivity analysis."""
-    # Load graph data
+    # Load graph data from JSON
     with open('input_graph.json', 'r') as f:
         data = json.load(f)
     
@@ -85,10 +86,12 @@ def main():
     input_edge_count = len(data['edges'])
     
     # Build graph
-    graph = load_graph_from_json('input_graph.json')
+    G = nx.Graph()
+    G.add_nodes_from(data['nodes'])
+    G.add_edges_from(data['edges'])
     
     # Analyze connectivity
-    analysis = analyze_connectivity(graph, input_edge_count=input_edge_count)
+    analysis = analyze_connectivity(G, input_edge_count=input_edge_count)
     
     # Print results as JSON
     print(json.dumps(analysis, indent=2))
