@@ -1,14 +1,26 @@
-# Mapeador de Conectividade
+# Mapeador de Conectividade Rural
 
-Repositório para um mapeador simples de conectividade de pontos (nós em uma rede/grafo), implementado em Python. Carrega dados de pontos de um JSON, constrói um grafo com NetworkX e gera relatórios de conectividade.
+Um aplicativo Python para mapear pontos de acesso à internet em comunidades rurais, com foco em conexões Starlink e outras tecnologias.
 
-## 📋 Características
+## 🎯 Objetivo
 
-- **Carregamento de dados**: Lê pontos e suas conexões de arquivos JSON
-- **Construção de grafo**: Cria um grafo NetworkX com base nos dados carregados
-- **Análise de conectividade**: Calcula estatísticas como densidade, componentes conectados e grau dos nós
-- **Relatórios detalhados**: Gera relatórios de texto com todas as informações de conectividade
-- **Visualização gráfica**: Cria imagens PNG do grafo para visualização
+Auxiliar governos, ONGs e comunidades a:
+- Mapear pontos de acesso à internet existentes
+- Medir qualidade de conexão (velocidade, latência)
+- Gerar relatórios para expansão de infraestrutura
+- Identificar áreas com baixa conectividade
+
+## ✨ Funcionalidades
+
+- ✅ Cadastro de pontos de acesso com geolocalização
+- ✅ Medição automática de velocidade da internet
+- ✅ Teste de conectividade com sites essenciais
+- ✅ Geração de relatórios em múltiplos formatos
+- ✅ Busca e filtragem por comunidade/provedor
+- ✅ Estatísticas detalhadas
+- ✅ Interface de linha de comando amigável
+- ✅ Persistência de dados em JSON
+- ✅ Visualização de conectividade em grafos
 
 ## 🚀 Instalação
 
@@ -29,12 +41,6 @@ Execute o programa principal:
 ```bash
 python main.py
 ```
-
-O programa irá:
-1. Carregar os pontos de `data/pontos.json`
-2. Construir um grafo NetworkX
-3. Gerar um relatório em `data/relatorios/relatorio_YYYYMMDD_HHMMSS.txt`
-4. Criar uma visualização em `data/relatorios/grafo_YYYYMMDD_HHMMSS.png`
 
 ### Uso Programático
 
@@ -59,20 +65,23 @@ visualizacao = mapeador.visualize_graph()
 ## 📁 Estrutura do Projeto
 
 ```
-Mapeador-de-Conectividade/
-├── main.py              # Classe principal MapeadorConectividade
-├── utils.py             # Funções utilitárias (legacy)
-├── requirements.txt     # Dependências Python
+mapeador-conectividade/
+├── main.py                      # Interface principal com tratamento de erros
+├── models.py                    # Classes de dados
+├── utils.py                     # Funções utilitárias completas
 ├── data/
-│   ├── pontos.json     # Arquivo de dados de entrada
-│   └── relatorios/     # Diretório de saída (gerado automaticamente)
-└── README.md           # Este arquivo
+│   ├── pontos.json             # Dados de exemplo
+│   └── relatorios/             # Relatórios gerados
+├── requirements.txt             # Dependências
+├── .gitignore                   # Arquivos ignorados no Git
+└── README.md                    # Documentação completa
 ```
 
 ## 📝 Formato dos Dados
 
-O arquivo `data/pontos.json` deve seguir este formato:
+O arquivo `data/pontos.json` suporta dois formatos:
 
+### Formato Simples (Grafo de Conectividade)
 ```json
 {
   "pontos": [
@@ -81,49 +90,79 @@ O arquivo `data/pontos.json` deve seguir este formato:
       "x": 0,
       "y": 0,
       "conecta": ["B", "C"]
-    },
-    {
-      "id": "B",
-      "x": 2,
-      "y": 1,
-      "conecta": ["A", "D"]
     }
   ]
 }
 ```
 
-Cada ponto deve conter:
-- `id`: Identificador único do ponto
-- `x`, `y`: Coordenadas para visualização
-- `conecta`: Lista de IDs de pontos conectados
-
-## 📊 Exemplo de Relatório
-
+### Formato Completo (Pontos de Acesso Rural)
+```json
+{
+  "pontos": [
+    {
+      "id": "PA001",
+      "nome": "Centro Comunitário Vila Nova",
+      "latitude": -15.7942,
+      "longitude": -47.8822,
+      "comunidade": "Vila Nova",
+      "provedor": "Starlink",
+      "tecnologia": "Satélite",
+      "velocidade_download": 150.5,
+      "velocidade_upload": 20.3,
+      "latencia": 45,
+      "status": "ativo",
+      "observacoes": "Ponto principal da comunidade"
+    }
+  ]
+}
 ```
-============================================================
-RELATÓRIO DE CONECTIVIDADE
-============================================================
 
-Data/Hora: 2025-12-11 20:10:22
+## 📊 Relatórios
 
-ESTATÍSTICAS GERAIS:
-  - Número de nós: 7
-  - Número de arestas: 6
-  - Densidade: 0.2857
-  - Componentes conectados: 2
-
-GRAU DOS NÓS:
-  - A: 2 conexão(ões)
-  - B: 2 conexão(ões)
-  ...
-```
+O sistema gera relatórios detalhados incluindo:
+- Estatísticas de velocidade (download/upload)
+- Análise de latência
+- Distribuição por comunidade e provedor
+- Análise de conectividade entre pontos
+- Grafos visuais de conectividade
+- Componentes conectados e isolados
 
 ## 🔧 Dependências
 
+### Principais
 - Python 3.7+
-- NetworkX >= 3.0
-- Matplotlib >= 3.5.0
+- NetworkX >= 3.0 - Análise de grafos
+- Matplotlib >= 3.5.0 - Visualizações
+- Pandas >= 2.1.4 - Manipulação de dados
+- Requests >= 2.31.0 - Testes de conectividade
+- Speedtest-cli >= 2.1.3 - Medição de velocidade
+- Geopy >= 2.4.1 - Cálculos geográficos
+- Tabulate >= 0.9.0 - Formatação de tabelas
+- Colorama >= 0.4.6 - Cores no terminal
+
+### Desenvolvimento
+- pytest >= 7.4.3 - Testes
+- black >= 23.11.0 - Formatação de código
+- flake8 >= 6.1.0 - Linting
+
+## 🤝 Contribuindo
+
+Contribuições são bem-vindas! Por favor:
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/NovaFuncionalidade`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)
+4. Push para a branch (`git push origin feature/NovaFuncionalidade`)
+5. Abra um Pull Request
 
 ## 📄 Licença
 
 Este projeto é de código aberto e está disponível sob a licença MIT.
+
+## 🌟 Casos de Uso
+
+- **Governos**: Planejamento de expansão de infraestrutura digital
+- **ONGs**: Monitoramento de projetos de inclusão digital
+- **Comunidades**: Mapeamento colaborativo de pontos de acesso
+- **Pesquisadores**: Análise de conectividade em áreas rurais
+- **Provedores**: Identificação de oportunidades de expansão
+

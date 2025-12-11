@@ -4,22 +4,38 @@ __pycache__/
 *$py.class
 *.so
 .Python
-
-# Virtual environments
-venv/
 env/
-ENV/
+venv/
+.env
+.venv/
 
-# Generated reports and visualizations
-data/relatorios/
+# Dados sensíveis
+*.db
+*.sqlite
+config.json
+secrets.json
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
 
-# OS
+# Sistema
 .DS_Store
 Thumbs.db
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+temp/
+
+# Relatórios gerados (mantenha estrutura, mas ignore conteúdo)
+data/relatorios/*.txt
+data/relatorios/*.json
+data/relatorios/*.csv
+data/relatorios/*.png
+!data/relatorios/.gitkeep
+
+# Diretório de backup
+backup/
