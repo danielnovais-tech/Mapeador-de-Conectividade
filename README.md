@@ -36,12 +36,32 @@ O programa irá:
 3. Gerar um relatório em `data/relatorios/relatorio_YYYYMMDD_HHMMSS.txt`
 4. Criar uma visualização em `data/relatorios/grafo_YYYYMMDD_HHMMSS.png`
 
+### Uso Programático
+
+Você também pode usar a classe `MapeadorConectividade` diretamente em seu código:
+
+```python
+from main import MapeadorConectividade
+
+# Criar instância
+mapeador = MapeadorConectividade(data_dir='data')
+
+# Executar análise completa
+mapeador.executar()
+
+# Ou executar etapas individuais
+mapeador.load_points()
+mapeador.build_graph()
+relatorio = mapeador.generate_report()
+visualizacao = mapeador.visualize_graph()
+```
+
 ## 📁 Estrutura do Projeto
 
 ```
 Mapeador-de-Conectividade/
-├── main.py              # Ponto de entrada da aplicação
-├── utils.py             # Funções utilitárias
+├── main.py              # Classe principal MapeadorConectividade
+├── utils.py             # Funções utilitárias (legacy)
 ├── requirements.txt     # Dependências Python
 ├── data/
 │   ├── pontos.json     # Arquivo de dados de entrada
