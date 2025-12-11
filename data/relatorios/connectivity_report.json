@@ -1,0 +1,9 @@
+{
+  "total_pontos": 5,
+  "total_conexoes": 4,
+  "componentes_conectados": 2,
+  "pontos_isolados": [
+    "E"
+  ],
+  "densidade": 0.4
+}
