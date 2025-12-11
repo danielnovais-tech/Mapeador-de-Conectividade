@@ -1,0 +1,30 @@
+[
+    {
+        "id": "1",
+        "name": "Ponto A",
+        "lat": -23.5505,
+        "lon": -46.6333,
+        "neighbors": ["2", "3"]
+    },
+    {
+        "id": "2",
+        "name": "Ponto B",
+        "lat": -23.5606,
+        "lon": -46.6544,
+        "neighbors": ["1", "4"]
+    },
+    {
+        "id": "3",
+        "name": "Ponto C",
+        "lat": -23.5707,
+        "lon": -46.6755,
+        "neighbors": ["1"]
+    },
+    {
+        "id": "4",
+        "name": "Ponto D",
+        "lat": -23.5808,
+        "lon": -46.6966,
+        "neighbors": ["2"]
+    }
+]
