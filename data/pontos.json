@@ -1,0 +1,32 @@
+{
+  "pontos": [
+    {
+      "id": 1,
+      "nome": "Ponto A",
+      "x": 0,
+      "y": 0,
+      "conexoes": [2, 3]
+    },
+    {
+      "id": 2,
+      "nome": "Ponto B",
+      "x": 1,
+      "y": 1,
+      "conexoes": [1, 4]
+    },
+    {
+      "id": 3,
+      "nome": "Ponto C",
+      "x": 2,
+      "y": 0,
+      "conexoes": [1, 4]
+    },
+    {
+      "id": 4,
+      "nome": "Ponto D",
+      "x": 1,
+      "y": -1,
+      "conexoes": [2, 3]
+    }
+  ]
+}
