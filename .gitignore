@@ -6,7 +6,14 @@ __pycache__/
 .Python
 env/
 venv/
-ENV/
+.env
+.venv/
+
+# Dados sensíveis
+*.db
+*.sqlite
+config.json
+secrets.json
 
 # IDE
 .vscode/
@@ -14,5 +21,20 @@ ENV/
 *.swp
 *.swo
 
-# Generated reports
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs e arquivos temporários
+*.log
+*.tmp
+temp/
+
+# Relatórios gerados (mantenha estrutura, mas ignore conteúdo)
 data/relatorios/*.txt
+data/relatorios/*.json
+data/relatorios/*.csv
+!data/relatorios/.gitkeep
+
+# Diretório de backup
+backup/
