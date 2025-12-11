@@ -44,6 +44,8 @@ Cada ponto contém:
 - `lon`: Longitude (coordenada geográfica)
 - `neighbors`: Lista de IDs dos pontos vizinhos conectados
 
+**Nota**: O grafo é não-direcionado (bidirecionado), portanto as conexões funcionam em ambas as direções automaticamente. Se o ponto A lista B como vizinho, então há uma conexão bidirecional entre A e B.
+
 ## Instalação
 
 1. Clone o repositório:

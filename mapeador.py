@@ -19,15 +19,28 @@ def carregar_pontos(caminho_arquivo: str) -> List[Dict[str, Any]]:
         
     Returns:
         Lista de dicionários contendo informações dos pontos
+        
+    Raises:
+        FileNotFoundError: Se o arquivo não for encontrado
+        json.JSONDecodeError: Se o arquivo não contiver JSON válido
     """
-    with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
-        pontos = json.load(arquivo)
-    return pontos
+    try:
+        with open(caminho_arquivo, 'r', encoding='utf-8') as arquivo:
+            pontos = json.load(arquivo)
+        return pontos
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Arquivo de dados não encontrado: {caminho_arquivo}")
+    except json.JSONDecodeError as e:
+        raise json.JSONDecodeError(f"Erro ao decodificar JSON: {e.msg}", e.doc, e.pos)
 
 
 def construir_grafo(pontos: List[Dict[str, Any]]) -> nx.Graph:
     """
     Constrói um grafo NetworkX a partir dos dados de pontos.
+    
+    Nota: O grafo é não-direcionado (NetworkX Graph), portanto as conexões
+    são bidirecionais automaticamente. Se o ponto A lista B como vizinho,
+    B pode alcançar A mesmo que A não esteja listado em seus vizinhos.
     
     Args:
         pontos: Lista de dicionários com informações dos pontos
@@ -128,22 +141,38 @@ def main():
     print("=" * 60)
     print()
     
-    # Carregar dados
-    print(f"Carregando dados de: {caminho_dados}")
-    pontos = carregar_pontos(caminho_dados)
-    print(f"✓ {len(pontos)} pontos carregados")
-    print()
+    try:
+        # Carregar dados
+        print(f"Carregando dados de: {caminho_dados}")
+        pontos = carregar_pontos(caminho_dados)
+        print(f"✓ {len(pontos)} pontos carregados")
+        print()
+        
+        # Construir grafo
+        print("Construindo grafo de conectividade...")
+        grafo = construir_grafo(pontos)
+        print(f"✓ Grafo construído com {grafo.number_of_nodes()} nós e {grafo.number_of_edges()} arestas")
+        print()
+        
+        # Gerar e exibir relatório
+        relatorio = gerar_relatorio_conectividade(grafo)
+        print(relatorio)
+        
+    except FileNotFoundError as e:
+        print(f"❌ Erro: {e}")
+        print(f"   Certifique-se de que o arquivo de dados existe em: {caminho_dados}")
+        return 1
+    except json.JSONDecodeError as e:
+        print(f"❌ Erro ao decodificar JSON: {e}")
+        print(f"   Verifique se o arquivo contém JSON válido.")
+        return 1
+    except Exception as e:
+        print(f"❌ Erro inesperado: {e}")
+        return 1
     
-    # Construir grafo
-    print("Construindo grafo de conectividade...")
-    grafo = construir_grafo(pontos)
-    print(f"✓ Grafo construído com {grafo.number_of_nodes()} nós e {grafo.number_of_edges()} arestas")
-    print()
-    
-    # Gerar e exibir relatório
-    relatorio = gerar_relatorio_conectividade(grafo)
-    print(relatorio)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+    sys.exit(main())
