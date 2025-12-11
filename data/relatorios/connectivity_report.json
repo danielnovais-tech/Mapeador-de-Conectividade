@@ -1,0 +1,52 @@
+{
+  "num_nos": 4,
+  "num_arestas": 4,
+  "nos": [
+    {
+      "id": 1,
+      "nome": "Ponto A",
+      "lat": -23.5505,
+      "lon": -46.6333,
+      "grau": 2
+    },
+    {
+      "id": 2,
+      "nome": "Ponto B",
+      "lat": -23.5515,
+      "lon": -46.6343,
+      "grau": 2
+    },
+    {
+      "id": 3,
+      "nome": "Ponto C",
+      "lat": -23.5525,
+      "lon": -46.6353,
+      "grau": 2
+    },
+    {
+      "id": 4,
+      "nome": "Ponto D",
+      "lat": -23.5535,
+      "lon": -46.6363,
+      "grau": 2
+    }
+  ],
+  "arestas": [
+    {
+      "origem": 1,
+      "destino": 2
+    },
+    {
+      "origem": 1,
+      "destino": 4
+    },
+    {
+      "origem": 2,
+      "destino": 3
+    },
+    {
+      "origem": 3,
+      "destino": 4
+    }
+  ]
+}
