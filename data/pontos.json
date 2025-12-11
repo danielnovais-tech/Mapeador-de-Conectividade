@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "name": "Ponto A (Centro)",
+    "lat": -23.5505,
+    "lon": -46.6333,
+    "neighbors": ["2", "3"]
+  },
+  {
+    "id": "2",
+    "name": "Ponto B (Norte)",
+    "lat": -23.4000,
+    "lon": -46.6000,
+    "neighbors": ["1"]
+  },
+  {
+    "id": "3",
+    "name": "Ponto C (Sul)",
+    "lat": -23.7000,
+    "lon": -46.6500,
+    "neighbors": ["1", "4"]
+  },
+  {
+    "id": "4",
+    "name": "Ponto D (Leste)",
+    "lat": -23.5500,
+    "lon": -46.5000,
+    "neighbors": ["3"]
+  }
+]
