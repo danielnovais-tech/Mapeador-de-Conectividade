@@ -1,0 +1,34 @@
+{
+  "pontos": [
+    {
+      "id": "A",
+      "nome": "Ponto A",
+      "conexoes": ["B", "C"]
+    },
+    {
+      "id": "B",
+      "nome": "Ponto B",
+      "conexoes": ["A", "D"]
+    },
+    {
+      "id": "C",
+      "nome": "Ponto C",
+      "conexoes": ["A", "D"]
+    },
+    {
+      "id": "D",
+      "nome": "Ponto D",
+      "conexoes": ["B", "C", "E"]
+    },
+    {
+      "id": "E",
+      "nome": "Ponto E",
+      "conexoes": ["D"]
+    },
+    {
+      "id": "F",
+      "nome": "Ponto F (isolado)",
+      "conexoes": []
+    }
+  ]
+}
