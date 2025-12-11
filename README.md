@@ -29,6 +29,8 @@ O arquivo `graph_data.json` deve conter:
 - `nodes`: Lista de IDs dos nós (strings)
 - `edges`: Lista de arestas, onde cada aresta é um par de IDs de nós
 
+**Nota sobre arestas:** Em grafos não-direcionados, arestas como `["1", "2"]` e `["2", "1"]` representam a mesma conexão. O programa conta o número de arestas da entrada original, mas o NetworkX trata arestas duplicadas como uma única aresta no grafo. Isso pode resultar em uma diferença entre `num_edges` (contagem da entrada) e o número real de arestas únicas no grafo.
+
 Exemplo:
 ```json
 {
