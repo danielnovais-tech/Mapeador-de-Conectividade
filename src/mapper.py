@@ -5,7 +5,6 @@ Carrega pontos de um JSON, constrói um grafo e gera relatório de conectividade
 """
 
 import json
-import os
 import networkx as nx
 from pathlib import Path
 
