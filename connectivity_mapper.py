@@ -32,13 +32,23 @@ def generate_report(G: nx.Graph, output_dir: str) -> str:
     os.makedirs(output_dir, exist_ok=True)
     report_file = os.path.join(output_dir, 'connectivity_report.json')
     
+    # Calculate shortest path example if possible
+    shortest_path_example = []
+    if G.number_of_nodes() >= 2:
+        nodes = list(G.nodes())
+        try:
+            shortest_path_example = nx.shortest_path(G, source=nodes[0], target=nodes[-1])
+        except nx.NetworkXNoPath:
+            # No path exists between the first and last nodes
+            shortest_path_example = []
+    
     report = {
         'num_nodes': G.number_of_nodes(),
         'num_edges': G.number_of_edges(),
         'connected_components': [list(comp) for comp in nx.connected_components(G)],
         'degrees': dict(G.degree()),
         'is_connected': nx.is_connected(G) if len(G) > 0 else False,
-        'shortest_paths_example': nx.shortest_path(G, source='1', target='3') if G.has_node('1') and G.has_node('3') else []
+        'shortest_paths_example': shortest_path_example
     }
     
     with open(report_file, 'w', encoding='utf-8') as f:

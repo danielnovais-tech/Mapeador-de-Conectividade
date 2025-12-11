@@ -1,10 +1,10 @@
-from typing import List
+from typing import List, Optional
 
 
 class Point:
     """Representa um ponto (nó) com coordenadas e vizinhos."""
     
-    def __init__(self, id: str, name: str, lat: float, lon: float, neighbors: List[str] = None):
+    def __init__(self, id: str, name: str, lat: float, lon: float, neighbors: Optional[List[str]] = None):
         """
         Inicializa um ponto.
         
