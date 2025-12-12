@@ -368,9 +368,7 @@ class GeradorRelatorios:
         try:
             from colorama import Fore, Style, init as colorama_init
             colorama_init(autoreset=True)
-            COLORAMA_AVAILABLE = True
         except ImportError:
-            COLORAMA_AVAILABLE = False
             class Fore:
                 RED = GREEN = YELLOW = BLUE = CYAN = MAGENTA = WHITE = RESET = ""
             class Style:
@@ -471,7 +469,7 @@ class GeradorRelatorios:
                         
                         if 'velocidade_download' in ponto:
                             vel = ponto['velocidade_download']
-                            status_velocidade = "🔴 CRÍTICO" if vel < 10 else "�� BAIXO" if vel < 25 else "🟢 ADEQUADO"
+                            status_velocidade = "🔴 CRÍTICO" if vel < 10 else "🟡 BAIXO" if vel < 25 else "🟢 ADEQUADO"
                             f.write(f"  • Velocidade Download: {vel:.2f} Mbps {status_velocidade}\n")
                         
                         if 'velocidade_upload' in ponto:
