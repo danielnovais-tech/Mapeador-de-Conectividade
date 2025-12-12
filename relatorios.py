@@ -67,12 +67,12 @@ class GeradorRelatorios:
                         if isinstance(value, dict):
                             f.write(f"\n{key.replace('_', ' ').title()}:\n")
                             for subkey, subvalue in value.items():
-                                if isinstance(subvalue, float):
+                                if isinstance(subvalue, (int, float)):
                                     f.write(f"  {subkey}: {subvalue:.2f}\n")
                                 else:
                                     f.write(f"  {subkey}: {subvalue}\n")
                         else:
-                            if isinstance(value, float):
+                            if isinstance(value, (int, float)):
                                 f.write(f"{key.replace('_', ' ').title()}: {value:.2f}\n")
                             else:
                                 f.write(f"{key.replace('_', ' ').title()}: {value}\n")
@@ -162,12 +162,13 @@ class GeradorRelatorios:
         except Exception as e:
             raise RuntimeError(f"Erro ao gerar relatório JSON: {e}")
     
-    def gerar_relatorio_csv(self, pontos: List[Dict[str, Any]]) -> str:
+    def gerar_relatorio_csv(self, pontos: List[Dict[str, Any]], estatisticas: Optional[Dict[str, Any]] = None) -> str:
         """
         Gera relatório em formato CSV.
         
         Args:
             pontos: Lista de pontos
+            estatisticas: Estatísticas (opcional, não incluídas no CSV)
             
         Returns:
             Caminho do arquivo gerado
@@ -307,19 +308,24 @@ class GeradorRelatorios:
             raise RuntimeError(f"Erro ao gerar relatório HTML: {e}")
     
     def gerar_relatorio_completo(self, pontos: List[Dict[str, Any]], estatisticas: Optional[Dict[str, Any]] = None, 
-                                 formatos: List[str] = ['txt', 'json']) -> Dict[str, str]:
+                                 formatos: Optional[List[str]] = None) -> Dict[str, str]:
         """
         Gera relatórios em múltiplos formatos.
         
         Args:
             pontos: Lista de pontos
             estatisticas: Estatísticas (opcional)
-            formatos: Lista de formatos desejados ('txt', 'json', 'csv', 'html')
+            formatos: Lista de formatos desejados ('txt', 'json', 'csv', 'html'). 
+                     Se None, gera ['txt', 'json']
             
         Returns:
             Dicionário com formato como chave e caminho do arquivo como valor
         """
+        if formatos is None:
+            formatos = ['txt', 'json']
+        
         relatorios = {}
+        erros = []
         
         for formato in formatos:
             formato = formato.lower()
@@ -329,12 +335,18 @@ class GeradorRelatorios:
                 elif formato == 'json':
                     relatorios['json'] = self.gerar_relatorio_json(pontos, estatisticas)
                 elif formato == 'csv':
-                    relatorios['csv'] = self.gerar_relatorio_csv(pontos)
+                    relatorios['csv'] = self.gerar_relatorio_csv(pontos, estatisticas)
                 elif formato == 'html':
                     relatorios['html'] = self.gerar_relatorio_html(pontos, estatisticas)
                 else:
-                    print(f"Aviso: Formato '{formato}' não suportado")
+                    erros.append(f"Formato '{formato}' não suportado")
             except Exception as e:
-                print(f"Erro ao gerar relatório {formato}: {e}")
+                erros.append(f"Erro ao gerar relatório {formato}: {e}")
+        
+        if erros:
+            # Log errors but continue if at least one format succeeded
+            import sys
+            for erro in erros:
+                print(erro, file=sys.stderr)
         
         return relatorios
