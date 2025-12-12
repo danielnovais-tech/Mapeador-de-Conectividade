@@ -34,6 +34,7 @@ temp/
 data/relatorios/*.txt
 data/relatorios/*.json
 data/relatorios/*.csv
+data/relatorios/*.html
 data/relatorios/*.png
 !data/relatorios/.gitkeep
 

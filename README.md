@@ -48,6 +48,7 @@ Você também pode usar a classe `MapeadorConectividade` diretamente em seu cód
 
 ```python
 from main import MapeadorConectividade
+from relatorios import GeradorRelatorios
 
 # Criar instância
 mapeador = MapeadorConectividade(data_dir='data')
@@ -60,6 +61,19 @@ mapeador.load_points()
 mapeador.build_graph()
 relatorio = mapeador.generate_report()
 visualizacao = mapeador.visualize_graph()
+
+# Gerar relatórios em múltiplos formatos
+gerador = GeradorRelatorios(output_dir='data/relatorios')
+pontos = mapeador.load_points()
+
+# Gerar relatórios individuais
+txt_file = gerador.gerar_relatorio_txt(pontos)
+json_file = gerador.gerar_relatorio_json(pontos)
+html_file = gerador.gerar_relatorio_html(pontos)
+csv_file = gerador.gerar_relatorio_csv(pontos)
+
+# Ou gerar todos os formatos de uma vez
+relatorios = gerador.gerar_relatorio_completo(pontos, formatos=['txt', 'json', 'html', 'csv'])
 ```
 
 ## 📁 Estrutura do Projeto
@@ -68,6 +82,7 @@ visualizacao = mapeador.visualize_graph()
 mapeador-conectividade/
 ├── main.py                      # Interface principal com tratamento de erros
 ├── models.py                    # Classes de dados
+├── relatorios.py                # Gerador de relatórios em múltiplos formatos
 ├── utils.py                     # Funções utilitárias completas
 ├── data/
 │   ├── pontos.json             # Dados de exemplo
@@ -119,13 +134,52 @@ O arquivo `data/pontos.json` suporta dois formatos:
 
 ## 📊 Relatórios
 
-O sistema gera relatórios detalhados incluindo:
-- Estatísticas de velocidade (download/upload)
+O sistema gera relatórios detalhados em múltiplos formatos através da classe `GeradorRelatorios`:
+
+### Formatos Suportados
+
+1. **TXT**: Relatório de texto formatado com cabeçalho, estatísticas e lista detalhada de pontos
+2. **JSON**: Dados estruturados em formato JSON para integração com outros sistemas
+3. **HTML**: Relatório web interativo com tabelas estilizadas e estatísticas visuais
+4. **CSV**: Planilha para análise em Excel ou ferramentas de dados
+
+### Conteúdo dos Relatórios
+
+- Estatísticas de velocidade (download/upload/latência)
+  - Médias, mínimos e máximos
+  - Total de medições
 - Análise de latência
 - Distribuição por comunidade e provedor
 - Análise de conectividade entre pontos
 - Grafos visuais de conectividade
 - Componentes conectados e isolados
+- Lista detalhada de todos os pontos com:
+  - Identificação e localização
+  - Velocidades medidas
+  - Status operacional
+  - Observações
+
+### Exemplo de Uso
+
+```python
+from relatorios import GeradorRelatorios
+from utils import calcular_estatisticas_velocidade
+
+gerador = GeradorRelatorios(output_dir='data/relatorios')
+
+# Carregar pontos
+pontos = [...]  # Lista de pontos
+
+# Calcular estatísticas
+stats = calcular_estatisticas_velocidade(pontos)
+
+# Gerar todos os formatos
+relatorios = gerador.gerar_relatorio_completo(
+    pontos, 
+    estatisticas=stats,
+    formatos=['txt', 'json', 'html', 'csv']
+)
+```
 
 ## 🔧 Dependências
 
