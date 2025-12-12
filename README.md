@@ -15,10 +15,13 @@ Auxiliar governos, ONGs e comunidades a:
 - ✅ Cadastro de pontos de acesso com geolocalização
 - ✅ Medição automática de velocidade da internet
 - ✅ Teste de conectividade com sites essenciais
-- ✅ Geração de relatórios em múltiplos formatos
+- ✅ Geração de relatórios em múltiplos formatos (TXT, JSON, HTML, CSV)
+- ✅ **Relatórios personalizados interativos** com filtros e opções customizáveis
+- ✅ Identificação automática de pontos críticos (< 10 Mbps)
+- ✅ Recomendações automáticas de upgrade e expansão
 - ✅ Busca e filtragem por comunidade/provedor
-- ✅ Estatísticas detalhadas
-- ✅ Interface de linha de comando amigável
+- ✅ Estatísticas detalhadas com médias, mínimos e máximos
+- ✅ Interface CLI colorida e amigável
 - ✅ Persistência de dados em JSON
 - ✅ Visualização de conectividade em grafos
 
@@ -41,6 +44,25 @@ Execute o programa principal:
 ```bash
 python main.py
 ```
+
+### Interface CLI para Relatórios
+
+Use a interface de linha de comando para gerar relatórios interativamente:
+
+```bash
+python gerar_relatorio_cli.py
+```
+
+A CLI oferece:
+- Menu interativo com 6 opções de relatório
+- Geração de relatórios em múltiplos formatos (TXT, JSON, HTML, CSV)
+- **Relatório Personalizado Interativo** com opções selecionáveis:
+  - ✅ Estatísticas gerais
+  - ✅ Lista completa de pontos
+  - ⚙️ Apenas pontos com medição
+  - ⚙️ Apenas pontos críticos (< 10 Mbps)
+  - ⚙️ Recomendações automáticas
+  - ⚙️ Metodologia de coleta
 
 ### Uso Programático
 
@@ -74,6 +96,16 @@ csv_file = gerador.gerar_relatorio_csv(pontos)
 
 # Ou gerar todos os formatos de uma vez
 relatorios = gerador.gerar_relatorio_completo(pontos, formatos=['txt', 'json', 'html', 'csv'])
+
+# Gerar relatório personalizado programaticamente
+relatorio_custom = gerador.gerar_relatorio_personalizado(
+    pontos,
+    estatisticas=stats,
+    opcoes=['1', '4', '5']  # Estatísticas, críticos e recomendações
+)
+
+# Ou modo interativo (sem passar opcoes)
+relatorio_interativo = gerador.gerar_relatorio_personalizado(pontos, stats)
 ```
 
 ## 📁 Estrutura do Projeto
@@ -83,6 +115,7 @@ mapeador-conectividade/
 ├── main.py                      # Interface principal com tratamento de erros
 ├── models.py                    # Classes de dados
 ├── relatorios.py                # Gerador de relatórios em múltiplos formatos
+├── gerar_relatorio_cli.py       # Interface CLI para geração de relatórios
 ├── utils.py                     # Funções utilitárias completas
 ├── data/
 │   ├── pontos.json             # Dados de exemplo

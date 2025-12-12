@@ -350,3 +350,220 @@ class GeradorRelatorios:
                 print(erro, file=sys.stderr)
         
         return relatorios
+
+    def gerar_relatorio_personalizado(self, pontos: List[Dict[str, Any]], estatisticas: Optional[Dict[str, Any]] = None, 
+                                      opcoes: Optional[List[str]] = None) -> str:
+        """
+        Gera relatório personalizado com opções selecionáveis.
+        
+        Args:
+            pontos: Lista de pontos
+            estatisticas: Estatísticas (opcional)
+            opcoes: Lista de opções (1-6). Se None, modo interativo
+            
+        Returns:
+            Caminho do arquivo gerado
+        """
+        # Importar colorama se disponível
+        try:
+            from colorama import Fore, Style, init as colorama_init
+            colorama_init(autoreset=True)
+            COLORAMA_AVAILABLE = True
+        except ImportError:
+            COLORAMA_AVAILABLE = False
+            class Fore:
+                RED = GREEN = YELLOW = BLUE = CYAN = MAGENTA = WHITE = RESET = ""
+            class Style:
+                BRIGHT = RESET_ALL = ""
+        
+        # Se opcoes não fornecidas, entrar em modo interativo
+        if opcoes is None:
+            print(f"\n{Fore.CYAN}{'=' * 70}{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}GERADOR DE RELATÓRIO PERSONALIZADO{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}{'=' * 70}{Style.RESET_ALL}\n")
+            
+            print("Incluir no relatório:")
+            print("1. ✅ Estatísticas gerais")
+            print("2. ✅ Lista completa de pontos")
+            print("3. ⚙️  Apenas pontos com medição")
+            print("4. ⚙️  Apenas pontos críticos (< 10 Mbps)")
+            print("5. ⚙️  Recomendações")
+            print("6. ⚙️  Metodologia")
+            
+            entrada = input(f"\n{Fore.GREEN}Selecione opções (separadas por vírgula): {Style.RESET_ALL}").strip()
+            opcoes = [o.strip() for o in entrada.split(',') if o.strip()]
+        
+        # Validar opcoes
+        opcoes_validas = [o for o in opcoes if o in ['1', '2', '3', '4', '5', '6']]
+        
+        # Filtrar dados conforme opções
+        dados_filtrados = pontos.copy()
+        filtro_aplicado = None
+        
+        if "3" in opcoes_validas:
+            dados_filtrados = [d for d in dados_filtrados if d.get('velocidade_download')]
+            filtro_aplicado = "Apenas pontos com medição"
+        
+        if "4" in opcoes_validas:
+            dados_filtrados = [d for d in dados_filtrados if d.get('velocidade_download', 100) < 10]
+            filtro_aplicado = "Apenas pontos críticos (< 10 Mbps)"
+        
+        # Gerar relatório
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"relatorio_personalizado_{timestamp}.txt"
+        filepath = self.output_dir / filename
+        
+        try:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                # Cabeçalho
+                f.write("=" * 70 + "\n")
+                f.write("RELATÓRIO PERSONALIZADO - MAPEADOR DE CONECTIVIDADE RURAL\n")
+                f.write("=" * 70 + "\n\n")
+                
+                f.write(f"Data de geração: {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
+                f.write(f"Total de pontos analisados: {len(pontos)}\n")
+                if filtro_aplicado:
+                    f.write(f"Filtro aplicado: {filtro_aplicado}\n")
+                f.write(f"Pontos no relatório: {len(dados_filtrados)}\n\n")
+                
+                # Estatísticas gerais
+                if "1" in opcoes_validas and estatisticas:
+                    f.write("-" * 70 + "\n")
+                    f.write("ESTATÍSTICAS GERAIS\n")
+                    f.write("-" * 70 + "\n\n")
+                    
+                    for key, value in estatisticas.items():
+                        if isinstance(value, dict):
+                            f.write(f"{key.replace('_', ' ').title()}:\n")
+                            for subkey, subvalue in value.items():
+                                if isinstance(subvalue, (int, float)):
+                                    f.write(f"  • {subkey}: {subvalue:.2f}\n")
+                                else:
+                                    f.write(f"  • {subkey}: {subvalue}\n")
+                            f.write("\n")
+                        else:
+                            if isinstance(value, (int, float)):
+                                f.write(f"{key.replace('_', ' ').title()}: {value:.2f}\n")
+                            else:
+                                f.write(f"{key.replace('_', ' ').title()}: {value}\n")
+                    f.write("\n")
+                
+                # Lista de pontos
+                if ("2" in opcoes_validas or "3" in opcoes_validas or "4" in opcoes_validas) and dados_filtrados:
+                    f.write("-" * 70 + "\n")
+                    f.write(f"PONTOS DE ACESSO ({len(dados_filtrados)})\n")
+                    f.write("-" * 70 + "\n\n")
+                    
+                    for i, ponto in enumerate(dados_filtrados, 1):
+                        f.write(f"Ponto {i}: {ponto.get('id', 'N/A')}\n")
+                        
+                        if 'nome' in ponto:
+                            f.write(f"  • Nome: {ponto['nome']}\n")
+                        
+                        if 'comunidade' in ponto:
+                            f.write(f"  • Comunidade: {ponto['comunidade']}\n")
+                        
+                        if 'provedor' in ponto:
+                            f.write(f"  • Provedor: {ponto['provedor']}\n")
+                        
+                        if 'tecnologia' in ponto:
+                            f.write(f"  • Tecnologia: {ponto['tecnologia']}\n")
+                        
+                        if 'velocidade_download' in ponto:
+                            vel = ponto['velocidade_download']
+                            status_velocidade = "🔴 CRÍTICO" if vel < 10 else "�� BAIXO" if vel < 25 else "🟢 ADEQUADO"
+                            f.write(f"  • Velocidade Download: {vel:.2f} Mbps {status_velocidade}\n")
+                        
+                        if 'velocidade_upload' in ponto:
+                            f.write(f"  • Velocidade Upload: {ponto['velocidade_upload']:.2f} Mbps\n")
+                        
+                        if 'latencia' in ponto:
+                            lat = ponto['latencia']
+                            status_lat = "🔴 ALTA" if lat > 100 else "🟡 MODERADA" if lat > 50 else "🟢 BAIXA"
+                            f.write(f"  • Latência: {lat:.2f} ms {status_lat}\n")
+                        
+                        if 'status' in ponto:
+                            f.write(f"  • Status: {ponto['status']}\n")
+                        
+                        f.write("\n")
+                
+                # Recomendações
+                if "5" in opcoes_validas:
+                    f.write("-" * 70 + "\n")
+                    f.write("RECOMENDAÇÕES\n")
+                    f.write("-" * 70 + "\n\n")
+                    
+                    # Analisar pontos críticos
+                    pontos_criticos = [p for p in pontos if p.get('velocidade_download', 100) < 10]
+                    pontos_inativos = [p for p in pontos if p.get('status', 'ativo') != 'ativo']
+                    
+                    if pontos_criticos:
+                        f.write(f"⚠️  URGENTE: {len(pontos_criticos)} ponto(s) com velocidade crítica (< 10 Mbps)\n")
+                        f.write("   Recomendação: Avaliar upgrade de tecnologia ou substituição de provedor\n\n")
+                    
+                    if pontos_inativos:
+                        f.write(f"⚠️  ATENÇÃO: {len(pontos_inativos)} ponto(s) inativo(s)\n")
+                        f.write("   Recomendação: Verificar manutenção e reativar serviços\n\n")
+                    
+                    # Análise de cobertura por tecnologia
+                    tecnologias = {}
+                    for p in pontos:
+                        tech = p.get('tecnologia', 'Desconhecida')
+                        tecnologias[tech] = tecnologias.get(tech, 0) + 1
+                    
+                    f.write("📊 Distribuição de Tecnologias:\n")
+                    for tech, count in sorted(tecnologias.items(), key=lambda x: x[1], reverse=True):
+                        f.write(f"   • {tech}: {count} ponto(s)\n")
+                    f.write("\n")
+                    
+                    # Recomendações gerais
+                    f.write("📋 Recomendações Gerais:\n")
+                    f.write("   1. Priorizar áreas com velocidade < 25 Mbps para expansão\n")
+                    f.write("   2. Considerar tecnologias satelitais (Starlink) para áreas remotas\n")
+                    f.write("   3. Implementar monitoramento contínuo de qualidade\n")
+                    f.write("   4. Estabelecer SLA mínimo de 25 Mbps para inclusão digital\n\n")
+                
+                # Metodologia
+                if "6" in opcoes_validas:
+                    f.write("-" * 70 + "\n")
+                    f.write("METODOLOGIA\n")
+                    f.write("-" * 70 + "\n\n")
+                    
+                    f.write("📖 Processo de Coleta de Dados:\n\n")
+                    f.write("1. LEVANTAMENTO:\n")
+                    f.write("   • Identificação de pontos de acesso existentes\n")
+                    f.write("   • Coleta de coordenadas GPS\n")
+                    f.write("   • Registro de informações de provedor e tecnologia\n\n")
+                    
+                    f.write("2. MEDIÇÕES:\n")
+                    f.write("   • Testes de velocidade (download/upload)\n")
+                    f.write("   • Medição de latência\n")
+                    f.write("   • Avaliação de estabilidade da conexão\n\n")
+                    
+                    f.write("3. ANÁLISE:\n")
+                    f.write("   • Cálculo de estatísticas agregadas\n")
+                    f.write("   • Identificação de pontos críticos\n")
+                    f.write("   • Mapeamento de áreas de baixa cobertura\n\n")
+                    
+                    f.write("4. CLASSIFICAÇÃO:\n")
+                    f.write("   • Adequado: ≥ 25 Mbps download\n")
+                    f.write("   • Baixo: 10-25 Mbps download\n")
+                    f.write("   • Crítico: < 10 Mbps download\n")
+                    f.write("   • Latência Baixa: ≤ 50 ms\n")
+                    f.write("   • Latência Moderada: 50-100 ms\n")
+                    f.write("   • Latência Alta: > 100 ms\n\n")
+                
+                # Rodapé
+                f.write("=" * 70 + "\n")
+                f.write("Relatório gerado pelo Mapeador de Conectividade Rural\n")
+                f.write("Para mais informações: https://github.com/danielnovais-tech\n")
+                f.write("=" * 70 + "\n")
+            
+            if opcoes is None:  # Modo interativo
+                print(f"\n{Fore.GREEN}✅ Relatório personalizado gerado com sucesso!{Style.RESET_ALL}")
+                print(f"📄 Arquivo: {filepath}\n")
+            
+            return str(filepath)
+        
+        except Exception as e:
+            raise RuntimeError(f"Erro ao gerar relatório personalizado: {e}")
