@@ -1,0 +1,32 @@
+{
+  "pontos": [
+    {
+      "id": "1",
+      "nome": "Ponto A (Centro)",
+      "lat": -23.5505,
+      "lon": -46.6333,
+      "conexoes": ["2", "3"]
+    },
+    {
+      "id": "2",
+      "nome": "Ponto B (Norte)",
+      "lat": -23.4000,
+      "lon": -46.6000,
+      "conexoes": ["1"]
+    },
+    {
+      "id": "3",
+      "nome": "Ponto C (Sul)",
+      "lat": -23.7000,
+      "lon": -46.6500,
+      "conexoes": ["1", "4"]
+    },
+    {
+      "id": "4",
+      "nome": "Ponto D (Leste)",
+      "lat": -23.5500,
+      "lon": -46.5000,
+      "conexoes": ["3"]
+    }
+  ]
+}
