@@ -15,6 +15,9 @@ output/
 *.png
 connectivity_report.json
 
+# Log files
+logs/*.log
+
 # IDE
 .vscode/
 .idea/
