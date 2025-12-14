@@ -3,31 +3,52 @@
 Exemplo de uso do Mapeador de Conectividade.
 """
 from connectivity_mapper import load_points, build_graph, generate_report, visualize_graph
+from cache_manager import CachedGraphBuilder
+from ai_integration import generate_ai_report, DEEPSEEK_AVAILABLE
+import logging
 
 
 def main():
-    # Caminho para o arquivo de dados
-    data_file = 'data/points.json'
-    output_dir = 'output'
+    """Exemplo de uso com todas as novas funcionalidades."""
     
-    print("Carregando pontos...")
-    points = load_points(data_file)
-    print(f"Carregados {len(points)} pontos.")
+    # Carregar pontos
+    try:
+        points = load_points('data/points.json')
+        print(f"✅ Carregados {len(points)} pontos")
+    except Exception as e:
+        print(f"❌ Erro ao carregar pontos: {e}")
+        return
     
-    print("\nConstruindo grafo...")
-    G = build_graph(points)
-    print(f"Grafo construído com {G.number_of_nodes()} nós e {G.number_of_edges()} arestas.")
+    # Construir grafo com cache
+    cache_builder = CachedGraphBuilder()
+    G = cache_builder.build_graph(points)
+    print(f"✅ Grafo construído: {G.number_of_nodes()} nós, {G.number_of_edges()} arestas")
     
-    print("\nGerando relatório de conectividade...")
-    report_file = generate_report(G, output_dir)
-    print(f"Relatório salvo em: {report_file}")
+    # Gerar relatório tradicional
+    try:
+        report_file = generate_report(G, 'output')
+        print(f"✅ Relatório gerado: {report_file}")
+    except Exception as e:
+        print(f"❌ Erro ao gerar relatório: {e}")
+        return
     
-    print("\nGerando visualização do grafo...")
-    viz_file = visualize_graph(G, output_dir)
-    print(f"Visualização salva em: {viz_file}")
+    # Visualizar grafo
+    try:
+        viz_file = visualize_graph(G, 'output')
+        print(f"✅ Visualização salva: {viz_file}")
+    except Exception as e:
+        print(f"❌ Erro ao visualizar grafo: {e}")
+        return
     
-    print("\n✓ Processo concluído com sucesso!")
+    # Gerar análise com IA (se disponível)
+    if DEEPSEEK_AVAILABLE:
+        ai_report = generate_ai_report(G, 'output')
+        if ai_report:
+            print(f"✅ Análise de IA gerada: {ai_report}")
+    else:
+        print("ℹ️  DeepSeek não disponível. Para análise de IA, instale: pip install openai")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
+
