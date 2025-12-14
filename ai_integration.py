@@ -9,7 +9,6 @@ try:
     DEEPSEEK_AVAILABLE = True
 except ImportError:
     DEEPSEEK_AVAILABLE = False
-    logging.warning("DeepSeek SDK não disponível. Instale com: pip install openai")
 
 
 class DeepSeekAnalyzer:
@@ -69,7 +68,7 @@ Forneça uma análise técnica sobre:
 def generate_ai_report(G: nx.Graph, output_dir: str, api_key: Optional[str] = None) -> Optional[str]:
     """Gera relatório com análise de IA (opcional)."""
     if not DEEPSEEK_AVAILABLE:
-        logging.info("DeepSeek não disponível, pulando análise de IA")
+        logging.info("DeepSeek SDK não disponível. Instale com: pip install openai")
         return None
     
     try:

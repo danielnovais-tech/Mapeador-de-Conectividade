@@ -33,15 +33,12 @@ def load_points(file_path: str) -> List[Point]:
         return points
     except FileNotFoundError as e:
         logging.error(f"❌ Erro: {e}")
-        print(f"❌ Erro: {e}")
         raise
     except json.JSONDecodeError as e:
         logging.error(f"❌ Erro ao decodificar JSON: {e}")
-        print(f"❌ Erro ao decodificar JSON: {e}")
         raise
     except Exception as e:
         logging.error(f"❌ Erro inesperado ao carregar pontos: {e}")
-        print(f"❌ Erro inesperado ao carregar pontos: {e}")
         raise
 
 def build_graph(points: List[Point]) -> nx.Graph:
@@ -49,7 +46,6 @@ def build_graph(points: List[Point]) -> nx.Graph:
     try:
         if not points:
             logging.warning("⚠️  Lista de pontos vazia, retornando grafo vazio")
-            print("⚠️  Lista de pontos vazia, retornando grafo vazio")
             return nx.Graph()
         
         if not isinstance(points, list):
@@ -76,7 +72,6 @@ def build_graph(points: List[Point]) -> nx.Graph:
         return G
     except Exception as e:
         logging.error(f"❌ Erro ao construir grafo: {e}")
-        print(f"❌ Erro ao construir grafo: {e}")
         raise
 
 def generate_report(G: nx.Graph, output_dir: str) -> str:
@@ -115,15 +110,12 @@ def generate_report(G: nx.Graph, output_dir: str) -> str:
         return report_file
     except PermissionError as e:
         logging.error(f"❌ Erro de permissão ao gerar relatório: {e}")
-        print(f"❌ Erro de permissão ao gerar relatório: {e}")
         raise
     except OSError as e:
         logging.error(f"❌ Erro de I/O ao gerar relatório: {e}")
-        print(f"❌ Erro de I/O ao gerar relatório: {e}")
         raise
     except Exception as e:
         logging.error(f"❌ Erro ao gerar relatório: {e}")
-        print(f"❌ Erro ao gerar relatório: {e}")
         raise
 
 def visualize_graph(G: nx.Graph, output_dir: str) -> str:
@@ -134,7 +126,6 @@ def visualize_graph(G: nx.Graph, output_dir: str) -> str:
     try:
         if G.number_of_nodes() == 0:
             logging.warning("⚠️  Grafo vazio, não é possível visualizar")
-            print("⚠️  Grafo vazio, não é possível visualizar")
             raise ValueError("Grafo vazio, não é possível visualizar")
         
         os.makedirs(output_dir, exist_ok=True)
@@ -142,43 +133,39 @@ def visualize_graph(G: nx.Graph, output_dir: str) -> str:
         
         plt.figure(figsize=(10, 8))
         
-        # Usa layout baseado em coordenadas geográficas (lat/lon) para posicionamento
         try:
+            # Usa layout baseado em coordenadas geográficas (lat/lon) para posicionamento
             pos = {node: (data['lon'], data['lat']) for node, data in G.nodes(data=True)}
             
             # Valida coordenadas
             for node, (lon, lat) in pos.items():
                 if not isinstance(lon, (int, float)) or not isinstance(lat, (int, float)):
                     raise ValueError(f"Coordenadas inválidas para o nó {node}: lat={lat}, lon={lon}")
+            
+            # Desenha o grafo
+            nx.draw(G, pos, with_labels=True, labels={node: data['name'] for node, data in G.nodes(data=True)},
+                    node_color='lightblue', node_size=500, font_size=10, font_weight='bold',
+                    edge_color='gray')
+            
+            plt.title('Visualização do Grafo de Conectividade')
+            plt.xlabel('Longitude')
+            plt.ylabel('Latitude')
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            
+            elapsed = (datetime.now() - start_time).total_seconds()
+            logging.info(f"✅ Visualização gerada com sucesso em {elapsed:.2f}s: {viz_file}")
+            
+            return viz_file
         except KeyError as e:
             logging.error(f"❌ Erro: Nó sem coordenadas necessárias: {e}")
-            print(f"❌ Erro: Nó sem coordenadas necessárias: {e}")
             raise ValueError(f"Nó sem coordenadas necessárias: {e}")
-        
-        # Desenha o grafo
-        nx.draw(G, pos, with_labels=True, labels={node: data['name'] for node, data in G.nodes(data=True)},
-                node_color='lightblue', node_size=500, font_size=10, font_weight='bold',
-                edge_color='gray')
-        
-        plt.title('Visualização do Grafo de Conectividade')
-        plt.xlabel('Longitude')
-        plt.ylabel('Latitude')
-        plt.grid(True, alpha=0.3)
-        plt.tight_layout()
-        plt.savefig(viz_file, dpi=300, bbox_inches='tight')
-        plt.close()
-        
-        elapsed = (datetime.now() - start_time).total_seconds()
-        logging.info(f"✅ Visualização gerada com sucesso em {elapsed:.2f}s: {viz_file}")
-        
-        return viz_file
+        finally:
+            plt.close()
     except (IOError, OSError) as e:
         logging.error(f"❌ Erro de I/O ao salvar visualização: {e}")
-        print(f"❌ Erro de I/O ao salvar visualização: {e}")
-        plt.close()
         raise
     except Exception as e:
         logging.error(f"❌ Erro ao visualizar grafo: {e}")
-        print(f"❌ Erro ao visualizar grafo: {e}")
-        plt.close()
         raise
